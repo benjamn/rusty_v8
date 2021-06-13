@@ -86,6 +86,7 @@ pub mod V8;
 
 pub use array_buffer::*;
 pub use bigint::*;
+pub use context::*;
 pub use data::*;
 pub use exception::*;
 pub use external_references::ExternalReference;

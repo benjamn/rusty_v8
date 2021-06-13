@@ -1719,6 +1719,20 @@ const v8::Context* v8__Context__FromSnapshot(v8::Isolate* isolate,
   return maybe_local_to_ptr(maybe_local);
 }
 
+extern "C"
+const v8::Value* v8__Context__GetContinuationPreservedEmbedderData(const v8::Context& self) {
+  return local_to_ptr(ptr_to_local(&self)->GetContinuationPreservedEmbedderData());
+}
+
+extern "C"
+void v8__Context__SetContinuationPreservedEmbedderData(
+  const v8::Context& self,
+  const v8::Value& data
+) {
+  ptr_to_local(&self)->SetContinuationPreservedEmbedderData(
+    ptr_to_local(&data));
+}
+
 const v8::String* v8__Message__Get(const v8::Message& self) {
   return local_to_ptr(self.Get());
 }
