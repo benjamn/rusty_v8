@@ -15,6 +15,14 @@ extern "C" {
     global_object: *const Value,
   ) -> *const Context;
   fn v8__Context__Global(this: *const Context) -> *const Object;
+
+  fn v8__Context__GetContinuationPreservedEmbedderData(
+    this: &Context,
+  ) -> *const Value;
+  fn v8__Context__SetContinuationPreservedEmbedderData(
+    this: &Context,
+    data: &Value,
+  );
 }
 
 impl Context {
@@ -57,5 +65,25 @@ impl Context {
     scope: &mut HandleScope<'s, ()>,
   ) -> Local<'s, Object> {
     unsafe { scope.cast_local(|_| v8__Context__Global(self)) }.unwrap()
+  }
+
+  pub fn get_subtext<'s>(
+    &self,
+    scope: &mut HandleScope<'s, ()>,
+  ) -> Local<'s, Value> {
+    unsafe {
+      scope.cast_local(|_sd|
+        v8__Context__GetContinuationPreservedEmbedderData(self)
+      )
+    }.unwrap()
+  }
+
+  pub fn set_subtext(
+    &self,
+    subtext: Local<Value>,
+  ) {
+    unsafe {
+      v8__Context__SetContinuationPreservedEmbedderData(self, &*subtext);
+    }
   }
 }
