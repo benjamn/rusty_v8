@@ -148,6 +148,11 @@ extern "C" {
     length: usize,
   ) -> *const Array;
   fn v8__Array__Length(array: *const Array) -> u32;
+  fn v8__Array__Push(
+    this: *const Array,
+    context: *const Context,
+    value: *const Value,
+  ) -> u32;
   fn v8__Map__Size(map: *const Map) -> usize;
   fn v8__Map__As__Array(this: *const Map) -> *const Array;
 }
@@ -582,6 +587,16 @@ impl Array {
 
   pub fn length(&self) -> u32 {
     unsafe { v8__Array__Length(self) }
+  }
+
+  pub fn push(
+    &self,
+    scope: &mut HandleScope,
+    value: Local<Value>,
+  ) -> u32 {
+    unsafe {
+      v8__Array__Push(self, &*scope.get_current_context(), &*value)
+    }
   }
 }
 
