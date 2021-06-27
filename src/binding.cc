@@ -1427,6 +1427,19 @@ const v8::Array* v8__Array__New_with_elements(v8::Isolate* isolate,
 
 uint32_t v8__Array__Length(const v8::Array& self) { return self.Length(); }
 
+uint32_t v8__Array__Push(
+  const v8::Array& self,
+  const v8::Context& context,
+  const v8::Value& value
+) {
+  void(ptr_to_local(&self)->Set(
+    ptr_to_local(&context),
+    self.Length(),
+    ptr_to_local(&value)
+  ));
+  return self.Length();
+}
+
 const v8::Date* v8__Date__New(const v8::Context& context, double time) {
   // v8::Date::New() is kind of weird in that it returns a v8::Value,
   // not a v8::Date, even though the object is always a Date object.
