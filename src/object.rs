@@ -14,6 +14,8 @@ use crate::Object;
 use crate::Private;
 use crate::PropertyAttribute;
 use crate::Value;
+use crate::String;
+use crate::Function;
 use std::convert::TryFrom;
 
 extern "C" {
@@ -561,6 +563,29 @@ impl Array {
       scope.cast_local(|sd| v8__Array__New(sd.get_isolate_ptr(), length))
     }
     .unwrap()
+  }
+
+  pub fn from<'s>(
+    scope: &mut HandleScope<'s>,
+    value: Local<Value>,
+  ) -> Local<'s, Array> {
+    let context = scope.get_current_context();
+    let global = context.global(scope);
+
+    let array_ctor_key = String::new(scope, "Array").unwrap();
+    let array_ctor_value = global.get(scope, array_ctor_key.into()).unwrap();
+    let array_ctor = Local::<Function>::try_from(array_ctor_value).unwrap();
+
+    let array_from_key = String::new(scope, "from").unwrap();
+    let array_from = Local::<Function>::try_from(
+      array_ctor.get(scope, array_from_key.into()).unwrap()
+    ).unwrap();
+
+    let result = array_from.call(scope, array_ctor_value, &[value]).unwrap();
+    match Local::<Array>::try_from(result) {
+      Ok(array) => array,
+      Err(_) => Array::new(scope, 0),
+    }
   }
 
   /// Creates a JavaScript array out of a Local<Value> array with a known
