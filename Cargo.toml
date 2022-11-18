@@ -110,5 +110,5 @@ name = "function"
 path = "benches/function.rs"
 harness = false
 
-[workspace]
-members = ["examples/android"]
+# [workspace]
+# members = ["examples/android"]
